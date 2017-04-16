@@ -1,4 +1,59 @@
 body {
-  background-color: #000;
-  color: red;
+  background-color: deepskyblue;
+  font-size: 2em;
+  color: #000;
+}
+
+h1 {
+  -webkit-transform: scale(1, 0.5);
+  -ms-transform: scale(1, 0.5);
+  transform: scale(1, 0.5);
+  font-size: 4em;
+  color: white;
+}
+
+h1:hover {
+  transition: color 1s ease;
+}
+
+a:hover {
+  transition: color 1s ease;
+}
+
+figure > div {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  margin: 20px;
+  background: white;
+}
+
+#skew {
+  -webkit-transform: skew(35deg);
+  -ms-transform: skew(35deg);
+  transform: skew(35deg);
+}
+
+#scale {
+  -webkit-transform: scale(1, 0.5);
+  -ms-transform: scale(1, 0.5);
+  transform: scale(1, 0.5);
+}
+
+#rotate {
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+#translate {
+  -webkit-transform: translate(10px, 20px);
+  -ms-transform: translate(10px, 20px);
+  transform: translate(10px, 20px);
+}
+
+#rotate-skew-scale-translate {
+  -webkit-transform: skew(30deg) scale(1.1, 1.1) rotate(40deg) translate(10px, 20px);
+  -ms-transform: skew(30deg) scale(1.1, 1.1) rotate(40deg) translate(10px, 20px);
+  transform: skew(30deg) scale(1.1, 1.1) rotate(40deg) translate(10px, 20px);
 }
