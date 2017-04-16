@@ -2,20 +2,24 @@
 Workflow with NPM, SASS, GULP and More
 
 1 - Créer un new project "workflow" sur github
+
 2 - Cloner "workflow" de github
+
 3 - cd workflow
+
 4 - git init
+
 5 - npm init => package.json
+
 
 6 - Installing Gulp and Gulp SASS as dependencies in our project
 npm i —save-dev gulp gulp-sass
 
-Créer ensuite gulpfile.js
-
-Mettre à jour workflow sur github :
-git add .
-git commit -m "gulp gulp-sass gulpfile.js added"
-git push -u origin master
+    Créer ensuite gulpfile.js
+    Mettre à jour workflow sur github :
+    git add .
+    git commit -m "gulp gulp-sass gulpfile.js added"
+    git push -u origin master
 
 7 - Créer une premiere task "sass" :
 
