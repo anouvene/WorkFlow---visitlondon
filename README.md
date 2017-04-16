@@ -13,7 +13,8 @@ Workflow with NPM, SASS, GULP and More
 
 
 6 - Installing Gulp and Gulp SASS as dependencies in our project
-npm i —save-dev gulp gulp-sass
+
+    npm i —save-dev gulp gulp-sass
 
     Créer ensuite gulpfile.js
     Mettre à jour workflow sur github :
@@ -23,31 +24,42 @@ npm i —save-dev gulp gulp-sass
 
 7 - Créer une premiere task "sass" :
 
-￼
 
 gulp file.js :
 
 var gulp = require('gulp'); 
+
 var sass = require('gulp-sass'); 
+
 gulp.task('sass', function(){ 
-  return gulp.src('src/scss/app.scss') 
-    .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError)) 
-    .pipe(gulp.dest('app/css'));   });     gulp.task('default', ['sass']);
+
+    return gulp.src('src/scss/app.scss') 
+      .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError)) 
+      .pipe(gulp.dest('app/css')); 
+
+});   
+
+gulp.task('default', ['sass']);
 
 
 => Dans terminal, entrer la commande gulp pour lancer le compilateur sass
 
 
 8 - Installer BrowserSync + task (gulp) watch correspondant :
-npm i —save-dev browser-sync // yarn add -D browser-sync
+
+    npm i —save-dev browser-sync // yarn add -D browser-sync
 
 
 gulp file.js :
 
 var gulp = require('gulp'); 
+
 var sass = require('gulp-sass');  
+
 var browserSync = require('browser-sync'); 
+
 var reload = browserSync.reload;  
+
 var SRCPATHS = { 
   sassSrc : 'src/scss/*.scss' 
 };  
@@ -61,9 +73,11 @@ var APPPATH = { 
 // SASS 
 
 gulp.task('sass', function(){ 
-  return gulp.src(SRCPATHS.sassSrc) 
-    .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError)) 
-    .pipe(gulp.dest(APPPATH.css)); 
+
+    return gulp.src(SRCPATHS.sassSrc) 
+      .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError)) 
+      .pipe(gulp.dest(APPPATH.css)); 
+
 });  
 
 // BROWSER-SYNC: 'server' + 'sass' 
@@ -95,9 +109,10 @@ gulp.task('default', ['watch'] );
 
 
 9 - Auto Prefixer
-npm install —save-dev gulp-autoprefixer // yarn add -D gulp-autoprefixer
 
-gulp file.js :
+  npm install —save-dev gulp-autoprefixer // yarn add -D gulp-autoprefixer
+
+  gulp file.js :
 
   . . .
 
