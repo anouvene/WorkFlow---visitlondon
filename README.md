@@ -242,12 +242,12 @@ Workflow with NPM, SASS, GULP and More :
     Dans src > js > scripts.js
     Entrer les lignes de code suivantes :
 
-    global.jquery = require('jquery');
+    global.jQuery = require('jquery');
     bootstrap = require('bootstrap');
     mustache = require('mustache');
 
     Puis voir les changements dans app > js > main.js
-    Nous obtenons en effets une concaténation de différentes librairies.
+    Nous obtenons en effet une concaténation de différentes librairies.
 
 
 
