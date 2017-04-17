@@ -157,7 +157,7 @@ Workflow with NPM, SASS, GULP and More :
 
 
 
-11 - Cleaning HTML files
+11 - Clean HTML files
 
     npm install --save-dev gulp-clean
 
@@ -175,6 +175,52 @@ Workflow with NPM, SASS, GULP and More :
         gulp.watch([SOURCEPATHS.sassSource], ['sass']);
         gulp.watch([SOURCEPATHS.htmlSource], ['copy']);
     });
+
+
+12 - Copy &  clean JavaScript files
+
+    - - - - gulpfile.js - - - -
+
+    var SOURCEPATHS = {
+        sassSource: 'src/scss/*.scss',
+        htmlSource: 'src/*.html',
+        jsSource: 'src/js/**'
+    };
+
+    // Clean JavaScript files
+    gulp.task('clean-scripts', function() {
+        return gulp.src(APPPATH.js + '/*.js', {read: false, force: true})
+            .pipe(clean());
+    });
+
+    // Copy JavaScript + clean js files from app/js folder
+    gulp.task('scripts', ['clean-scripts'], function(){
+        gulp.src(SOURCEPATHS.jsSource)
+            .pipe(gulp.dest(APPPATH.js))
+    });
+
+    // Watch
+    gulp.task('watch', ['serve', 'sass', 'copy', 'clean-html', 'clean-scripts', 'scripts'], function() {
+        gulp.watch([SOURCEPATHS.sassSource], ['sass']);
+        gulp.watch([SOURCEPATHS.htmlSource], ['copy']);
+        gulp.watch([SOURCEPATHS.jsSource], ['scripts']);
+    });
+
+
+13 - Concatenation JS Files
+
+     npm install --save-dev gulp-concat
+
+     - - - - gulpfile.js - - - -
+
+     var concat =  require('gulp-concat');
+
+     // Copy JavaScript + clean js files from app/js folder
+     gulp.task('scripts', ['clean-scripts'], function(){
+         gulp.src(SOURCEPATHS.jsSource)
+             .pipe(concat('main.js')
+             .pipe(gulp.dest(APPPATH.js))
+     });
 
 
 
