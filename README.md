@@ -223,6 +223,31 @@ Workflow with NPM, SASS, GULP and More :
      });
 
 
+14 - Adding Browserify, Bootstrap, Mustache and jQuery
+
+    npm i --save-dev gulp-browserify jquery mustache bootstrap
+
+    - - - - gulpfile.js - - - -
+    var browserify = require('gulp-browserify');
+
+    // Copy JavaScript + clean js files from app/js folder
+    gulp.task('scripts', ['clean-scripts'], function(){
+        gulp.src(SOURCEPATHS.jsSource)
+            .pipe(concat('main.js'))
+            .pipe(browserify())
+            .pipe(gulp.dest(APPPATH.js))
+    });
+
+    // Test :
+    Dans src > js > scripts.js
+    Entrer les lignes de code suivantes :
+
+    global.jquery = require('jquery');
+    bootstrap = require('bootstrap');
+    mustache = require('mustache');
+
+    Puis voir les changements dans app > js > main.js
+    Nous obtenons en effets une concaténation de différentes librairies.
 
 
 
