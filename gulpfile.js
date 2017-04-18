@@ -12,6 +12,7 @@ var autoprefixerOptions = {
 var clean = require('gulp-clean');
 var concat = require('gulp-concat');
 var browserify = require('gulp-browserify');
+var merge = require('merge-stream');
 
 var SOURCEPATHS = {
     sassSource: 'src/scss/*.scss',
@@ -22,7 +23,8 @@ var SOURCEPATHS = {
 var APPPATH = {
     root: 'app/',
     css: 'app/css',
-    js: 'app/js'
+    js: 'app/js',
+    fonts: 'app/fonts'
 };
 
 // Clean HTML files
@@ -37,12 +39,24 @@ gulp.task('clean-scripts', function() {
         .pipe(clean());
 });
 
-// SASS
+// SASS + merge with bootstrapCSS
 gulp.task('sass', function() {
-    return gulp.src(SOURCEPATHS.sassSource)
+    var bootstrapCSS = gulp.src('./node_modules/bootstrap/dist/css/bootstrap.css');
+    var sassFiles;
+
+    sassFiles = gulp.src(SOURCEPATHS.sassSource)
         .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
-        .pipe(autoprefixer(autoprefixerOptions))
+        .pipe(autoprefixer(autoprefixerOptions));
+
+    return merge(bootstrapCSS, sassFiles)
+        .pipe(concat('app.css'))
         .pipe(gulp.dest(APPPATH.css));
+});
+
+// Move fonts bootstrap folder into app
+gulp.task('moveFonts', function(){
+    gulp.src('./node_modules/bootstrap/dist/fonts/*.{eot,svg,ttf,woff,woff2}')
+        .pipe(gulp.dest(APPPATH.fonts));
 });
 
 // Copy JavaScript + clean js files from app/js folder
@@ -70,7 +84,7 @@ gulp.task('serve', ['sass'], function() {
 });
 
 // Watch
-gulp.task('watch', ['serve', 'sass', 'copy', 'clean-html', 'clean-scripts', 'scripts'], function() {
+gulp.task('watch', ['serve', 'sass', 'copy', 'clean-html', 'clean-scripts', 'scripts', 'moveFonts'], function() {
     gulp.watch([SOURCEPATHS.sassSource], ['sass']);
     gulp.watch([SOURCEPATHS.htmlSource], ['copy']);
     gulp.watch([SOURCEPATHS.jsSource], ['scripts']);

@@ -249,7 +249,95 @@ Workflow with NPM, SASS, GULP and More :
     Puis voir les changements dans app > js > main.js
     Nous obtenons en effet une concaténation de différentes librairies.
 
+15 - Joindre bootstrapCSS & SCSS en un seul fichier avec merge-stream
+    
+    npm i --save-dev merge-stream
+    
+    - - - - gulpfile.js - - - -
+    var merge = require('merge-stream');
+    
+    // SASS + merge with bootstrapCSS
+    gulp.task('sass', function() {
+        var bootstrapCSS = gulp.src('./node_modules/bootstrap/dist/css/bootstrap.css');
+        var sassFiles;
+    
+        sassFiles = gulp.src(SOURCEPATHS.sassSource)
+            .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
+            .pipe(autoprefixer(autoprefixerOptions));
+    
+        return merge(sassFiles, bootstrapCSS)
+            .pipe(concat('app.css'))
+            .pipe(gulp.dest(APPPATH.css));
+    });
+    
+16 - EXAMPLE: tester Bootstrap & jQuery avec un Caroussel    
+    
+    Se rendre sur le site http://getbootstrap.com/javascript/#carousel
+    Puis copier/coller le code html du carousel dans le fichier src > index.html et observer
 
+17 - Copier le dossier fonts de bootstrap dans notre workflow
+
+    - - - - gulpfile.js - - - -
+    var APPPATH = {
+        root: 'app/',
+        css: 'app/css',
+        js: 'app/js',
+        fonts: 'app/fonts'
+    };
+    
+    // Move fonts bootstrap folder into app
+    gulp.task('moveFonts', function(){
+        gulp.src('./node_modules/bootstrap/dist/fonts/*.{eot,svg,ttf,woff,woff2}')
+            .pipe(gulp.dest(APPPATH.fonts));
+    });
+    
+    // Watch
+    gulp.task('watch', ['serve', 'sass', 'copy', 'clean-html', 'clean-scripts', 'scripts', 'moveFonts'], function() {
+        gulp.watch([SOURCEPATHS.sassSource], ['sass']);
+        gulp.watch([SOURCEPATHS.htmlSource], ['copy']);
+        gulp.watch([SOURCEPATHS.jsSource], ['scripts']);
+    });
+    
+18 - JSON & Mustache library
+
+    // In scripts.js file :
+    mustache = require('mustache');
+    
+    $(function($){
+        var jqxhr = $.getJSON('data.json', function(){
+    
+        }).done(function(data){
+           var template = $('#template').html();
+           var showTemplate = mustache.render(template, data);
+           $('#gallery').html(showTemplate);
+        });
+    });
+    
+    // In index.html file
+    <!--Mustache template-->
+    <h3>Gallery with Mustache template</h3>
+    <div id="gallery" class="gallery"></div>
+
+    <script id="template" type="x-tmpl-mustache">
+        {{#gallery}}
+            <div class="col-sm-6 col-md-6">
+                <div class="thumbnail">
+                    <img src="img/visit/{{image}}" alt="">
+                </div>
+                <div class="caption">
+                    <h3 class="text-center">{{destiny}}</h3>
+                </div>
+            </div>
+        {{/gallery}}
+    </script>
+    
+    
+    
+    
+
+
+    
+    
 
 
 
