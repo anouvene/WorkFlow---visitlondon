@@ -1,4 +1,10 @@
 # workflow
+# Pré-requis - Assurez-vous d'avoir installé :
++ [node.js] (http://nodejs.org)
++ [git] (http://git-scm.com/)
++ [gulp] (http://gulpjs.com/)
++ Run `npm install` # pour installer les dépendances du projet
+
 Workflow with NPM, SASS, GULP and More :
 
 1 - Créer un new project "workflow" sur github
@@ -332,12 +338,162 @@ Workflow with NPM, SASS, GULP and More :
     </script>
     
     
+    19 - Image minification
     
+    npm installe --save-dev gulp-newer gulp-imagemin
+    
+     - - - - gulpfile.js - - - -
+     
+    var newer = require('gulp-newer');
+    var imagemin = require('gulp-imagemin');
+    
+    var SOURCEPATHS = {
+        sassSource: 'src/scss/*.scss',
+        htmlSource: 'src/*.html',
+        jsSource: 'src/js/**',
+        imgSource: 'src/img/**'
+    };
+    
+    var APPPATH = {
+        root: 'app/',
+        css: 'app/css',
+        js: 'app/js',
+        fonts: 'app/fonts',
+        img: 'app/img'
+    };
+    
+    // ImageMin
+    gulp.task('images', function(){
+        return gulp.src(SOURCEPATHS.imgSource)
+            .pipe(newer(APPPATH.img))
+            .pipe(imagemin())
+            .pipe(gulp.dest(APPPATH.img));
+    });
+    
+    // Watch
+    gulp.task('watch', ['serve', 'sass', 'copy', 'clean-html', 'clean-scripts', 'scripts', 'moveFonts', 'images'], function() {
+        gulp.watch([SOURCEPATHS.sassSource], ['sass']);
+        gulp.watch([SOURCEPATHS.htmlSource], ['copy']);
+        gulp.watch([SOURCEPATHS.jsSource], ['scripts']);
+    });
     
 
-
+ 19 - Adding HTML partials
+ 
+    npm i --save-dev gulp-inject-partials
+     
+    - - - - gulpfile.js - - - -
+    
+    var injectPartials = require('gulp-inject-partials');
+    var SOURCEPATHS = {
+        sassSource: 'src/scss/*.scss',
+        htmlSource: 'src/*.html',
+        htmlPartialSource: 'src/partial/*.html',
+        jsSource: 'src/js/**',
+        imgSource: 'src/img/**'
+    };
+    
+    // Html
+    gulp.task('html', function(){
+        gulp.src(SOURCEPATHS.htmlSource)
+            .pipe(injectPartials())
+            .pipe(gulp.dest(APPPATH.root))
+    });
+    
+    // Copy html + clean HTML files from app folder
+    /*gulp.task('copy', ['clean-html'], function(){
+        gulp.src(SOURCEPATHS.htmlSource)
+            .pipe(gulp.dest(APPPATH.root))
+    });*/
+    
+    // Watch
+    gulp.task('watch', ['serve', 'sass', 'html', /*'copy',*/ 'clean-html', 'clean-scripts', 'scripts', 'moveFonts', 'images'], function() {
+        gulp.watch([SOURCEPATHS.sassSource], ['sass']);
+        // gulp.watch([SOURCEPATHS.htmlSource], ['copy']);
+        gulp.watch([SOURCEPATHS.jsSource], ['scripts']);
+        gulp.watch([SOURCEPATHS.htmlSource, SOURCEPATHS.htmlPartialSource], ['html']);
+    });
+    
+    // In the src > index.html
+    
+    <!-- partial:partial/_header.html -->
+    <!-- partial -->
+    
+        <div>The body of index.html</div>
+            
+    <!-- partial:partial/_footer.html -->
+    <!-- partial -->
     
     
+20 -  Adding JavaScript Minification
 
+    npm i --save-dev gulp-minify
+    
+    - - - - gulpfile.js - - - -
+    
+    var minify = require('gulp-minify');
+    
+    // Minify javaScript file
+    gulp.task('compress', function(){
+        gulp.src(SOURCEPATHS.jsSource)
+            .pipe(concat('main.js'))
+            .pipe(browserify())
+            .pipe(minify())
+            .pipe(gulp.dest(APPPATH.js))
+    });
+    
+    // Penser ensuite à exécuter la tâche "gulp compress" manuellement si besoin
+
+
+21 - Adding CSS Minification
+
+    npm i --save-dev gulp-cssmin
+    npm i --save-dev gulp-rename
+    
+    - - - - gulpfile.js - - - -
+    
+    var cssmin = require('gulp-cssmin');
+    var rename = require('gulp-rename');
+    
+    // Minify CSS
+    gulp.task('compresscss', function() {
+        var bootstrapCSS = gulp.src('./node_modules/bootstrap/dist/css/bootstrap.css');
+        var sassFiles;
+    
+        sassFiles = gulp.src(SOURCEPATHS.sassSource)
+            .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
+            .pipe(autoprefixer(autoprefixerOptions));
+    
+        return merge(bootstrapCSS, sassFiles)
+            .pipe(concat('app.css'))
+            .pipe(cssmin())
+            .pie(rename({suffix: '.min'}))
+            .pipe(gulp.dest(APPPATH.css));
+    });
+
+    // Penser ensuite à exécuter la tâche "gulp compresscss" manuellement si besoin
+    
+21 - Adding HTML Minification
+
+    npm i --save-dev gulp-htmlmin
+    
+    - - - - gulpfile.js - - - -
+    
+    var htmlmin = require('gulp-htmlmin');
+    
+    // Html minify
+    gulp.task('minifyHtml', function(){
+        gulp.src(SOURCEPATHS.htmlSource)
+            .pipe(injectPartials())
+            .pipe(htmlmin({collapseWhitespace: true}))
+            .pipe(gulp.dest(APPPATH.root))
+    });
+    
+    // Penser ensuite à exécuter la tâche "gulp minifyHtml" manuellement si besoin
+    
+    
+22 - Créer une tâche de minification du CSS, JS et HTML pour la production
+
+    gulp.task('production', ['compress', 'compresscss', 'minifyHtml']);
 
 
