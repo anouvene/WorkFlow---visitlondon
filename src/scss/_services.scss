@@ -1,0 +1,19 @@
+div.services {
+
+}
+
+.services-list {
+  list-style: none;
+  li {
+    text-align: center;
+    h3 {
+      margin-bottom: 20px;
+      font-style: map-get($heading-font-size, h3);
+    }
+    p {
+      margin-bottom: 10px;
+      color: $services-paragraph-font-color;
+      font-size: $services-paragraph-font-size;
+    }
+  }
+}

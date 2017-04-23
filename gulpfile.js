@@ -24,8 +24,10 @@ var cssmin = require('gulp-cssmin');
 var rename = require('gulp-rename');
 var htmlmin = require('gulp-htmlmin');
 
+
 var SOURCEPATHS = {
     sassSource: 'src/scss/*.scss',
+    sassApp: 'src/scss/app.scss', // because @import _otherSASSFiles
     htmlSource: 'src/*.html',
     htmlPartialSource: 'src/partial/*.html',
     jsSource: 'src/js/**',
@@ -54,14 +56,14 @@ gulp.task('clean-scripts', function() {
 
 // SASS + merge with bootstrapCSS
 gulp.task('sass', function() {
-    var bootstrapCSS = gulp.src('./node_modules/bootstrap/dist/css/bootstrap.css');
+    // var bootstrapCSS = gulp.src('./node_modules/bootstrap/dist/css/bootstrap.css');
     var sassFiles;
 
-    sassFiles = gulp.src(SOURCEPATHS.sassSource)
+    sassFiles = gulp.src(SOURCEPATHS.sassApp)
         .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
-        .pipe(autoprefixer(autoprefixerOptions));
+        .pipe(autoprefixer(autoprefixerOptions))
 
-    return merge(bootstrapCSS, sassFiles)
+    // return merge(bootstrapCSS, sassFiles)
         .pipe(concat('app.css'))
         .pipe(gulp.dest(APPPATH.css));
 });
@@ -75,10 +77,10 @@ gulp.task('images', function(){
 });
 
 // Move fonts bootstrap folder into app
-gulp.task('moveFonts', function(){
+/*gulp.task('moveFonts', function(){
     gulp.src('./node_modules/bootstrap/dist/fonts/*.{eot,svg,ttf,woff,woff2}')
         .pipe(gulp.dest(APPPATH.fonts));
-});
+});*/
 
 // Copy JavaScript + clean js files from app/js folder
 gulp.task('scripts', ['clean-scripts'], function(){
@@ -87,6 +89,7 @@ gulp.task('scripts', ['clean-scripts'], function(){
         .pipe(browserify())
         .pipe(gulp.dest(APPPATH.js))
 });
+
 
 /* Production tasks
 = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
@@ -101,14 +104,14 @@ gulp.task('compress', function(){
 
 // SASS + merge with bootstrapCSS
 gulp.task('compresscss', function() {
-    var bootstrapCSS = gulp.src('./node_modules/bootstrap/dist/css/bootstrap.css');
+    // var bootstrapCSS = gulp.src('./node_modules/bootstrap/dist/css/bootstrap.css');
     var sassFiles;
 
     sassFiles = gulp.src(SOURCEPATHS.sassSource)
         .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
-        .pipe(autoprefixer(autoprefixerOptions));
+        .pipe(autoprefixer(autoprefixerOptions))
 
-    return merge(bootstrapCSS, sassFiles)
+    // return merge(bootstrapCSS, sassFiles)
         .pipe(concat('app.css'))
         .pipe(cssmin())
         .pipe(rename({suffix: '.min'}))
@@ -150,12 +153,14 @@ gulp.task('serve', ['sass'], function() {
 });
 
 // Watch
-gulp.task('watch', ['serve', 'sass', 'html', /*'copy',*/ 'clean-html', 'clean-scripts', 'scripts', 'moveFonts', 'images'], function() {
+gulp.task('watch', ['serve', 'sass', 'clean-html', 'clean-scripts', 'scripts', /*'moveFonts',*/ 'images', 'html'], function() {
     gulp.watch([SOURCEPATHS.sassSource], ['sass']);
-    // gulp.watch([SOURCEPATHS.htmlSource], ['copy']);
+    //gulp.watch([SOURCEPATHS.htmlSource], ['copy']);
     gulp.watch([SOURCEPATHS.jsSource], ['scripts']);
-    gulp.watch([SOURCEPATHS.htmlSource, SOURCEPATHS.htmlPartialSource], ['html']);
+    gulp.watch([SOURCEPATHS.imgSource], ['images', 'clean-images']);
+    gulp.watch([SOURCEPATHS.htmlSource, SOURCEPATHS.htmlPartialSource], ['html','clean-html']);
 });
+
 
 // Default
 gulp.task('default', ['watch']);

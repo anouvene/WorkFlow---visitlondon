@@ -1,0 +1,14 @@
+footer.site-footer {
+  padding-top: 10px;
+  margin-top: 30px;
+  color: $footer-color;
+
+  p.site-info {
+    text-align: center;
+    background-color: darken($red, 10);
+    padding: 10px 0;
+    margin-top: 20px;
+    text-transform: uppercase;
+    color: $site-info-color;
+  }
+}
