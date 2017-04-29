@@ -134,6 +134,7 @@ gulp.task('html', function(){
     gulp.src(SOURCEPATHS.htmlSource)
         .pipe(injectPartials())
         .pipe(gulp.dest(APPPATH.root))
+        .pipe(reload({stream: true}));
 });
 
 // Copy html + clean HTML files from app folder
